@@ -127,7 +127,7 @@ function ArtisanProfileForm({ artisan, categories, onSaved }: any) {
     const { error } = await supabase.from("artisans").update({
       category_id: form.category_id || null,
       bio: form.bio,
-      skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
+      skills: String(form.skills).split(",").map((s: string) => s.trim()).filter(Boolean),
       experience_years: Number(form.experience_years) || 0,
       hourly_rate: form.hourly_rate ? Number(form.hourly_rate) : null,
       city: form.city,
