@@ -22,6 +22,7 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
           <Link to="/artisans" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Artisans</Link>
+          <Link to="/reviews" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Avis</Link>
           <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
         </nav>
         <div className="flex items-center gap-2">

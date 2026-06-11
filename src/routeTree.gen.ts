@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -19,6 +20,11 @@ import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
 
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  ReviewsRoute: typeof ReviewsRoute
   ArtisansIdRoute: typeof ArtisansIdRoute
   DashboardAdminRoute: typeof DashboardAdminRoute
   DashboardArtisanRoute: typeof DashboardArtisanRoute
@@ -149,6 +162,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  ReviewsRoute: ReviewsRoute,
   ArtisansIdRoute: ArtisansIdRoute,
   DashboardAdminRoute: DashboardAdminRoute,
   DashboardArtisanRoute: DashboardArtisanRoute,
