@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
@@ -19,6 +20,11 @@ import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
 
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -45,9 +51,9 @@ const RequestsNewRoute = RequestsNewRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardClientRoute = DashboardClientRouteImport.update({
-  id: '/dashboard/client',
-  path: '/dashboard/client',
-  getParentRoute: () => rootRouteImport,
+  id: '/client',
+  path: '/client',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardArtisanRoute = DashboardArtisanRouteImport.update({
   id: '/dashboard/artisan',
@@ -55,20 +61,21 @@ const DashboardArtisanRoute = DashboardArtisanRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminRoute = DashboardAdminRouteImport.update({
-  id: '/dashboard/admin',
-  path: '/dashboard/admin',
-  getParentRoute: () => rootRouteImport,
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const ArtisansIdRoute = ArtisansIdRouteImport.update({
-  id: '/artisans/$id',
-  path: '/artisans/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ArtisansRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -139,16 +151,21 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
-  ArtisansIdRoute: typeof ArtisansIdRoute
-  DashboardAdminRoute: typeof DashboardAdminRoute
+  ReviewsRoute: typeof ReviewsRoute
   DashboardArtisanRoute: typeof DashboardArtisanRoute
-  DashboardClientRoute: typeof DashboardClientRoute
   RequestsNewRoute: typeof RequestsNewRoute
   ArtisansIndexRoute: typeof ArtisansIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -186,10 +203,10 @@ declare module '@tanstack/react-router' {
     }
     '/dashboard/client': {
       id: '/dashboard/client'
-      path: '/dashboard/client'
+      path: '/client'
       fullPath: '/dashboard/client'
       preLoaderRoute: typeof DashboardClientRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/dashboard/artisan': {
       id: '/dashboard/artisan'
@@ -200,17 +217,17 @@ declare module '@tanstack/react-router' {
     }
     '/dashboard/admin': {
       id: '/dashboard/admin'
-      path: '/dashboard/admin'
+      path: '/admin'
       fullPath: '/dashboard/admin'
       preLoaderRoute: typeof DashboardAdminRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/artisans/$id': {
       id: '/artisans/$id'
-      path: '/artisans/$id'
+      path: '/$id'
       fullPath: '/artisans/$id'
       preLoaderRoute: typeof ArtisansIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ArtisansRoute
     }
   }
 }
@@ -219,13 +236,21 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
-  ArtisansIdRoute: ArtisansIdRoute,
-  DashboardAdminRoute: DashboardAdminRoute,
+  ReviewsRoute: ReviewsRoute,
   DashboardArtisanRoute: DashboardArtisanRoute,
-  DashboardClientRoute: DashboardClientRoute,
   RequestsNewRoute: RequestsNewRoute,
   ArtisansIndexRoute: ArtisansIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
