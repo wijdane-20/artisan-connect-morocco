@@ -14,16 +14,291 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      artisans: {
+        Row: {
+          approved: boolean
+          available: boolean
+          bio: string | null
+          category_id: string | null
+          city: string | null
+          created_at: string
+          experience_years: number | null
+          hourly_rate: number | null
+          id: string
+          rating_avg: number
+          rating_count: number
+          skills: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          available?: boolean
+          bio?: string | null
+          category_id?: string | null
+          city?: string | null
+          created_at?: string
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id: string
+          rating_avg?: number
+          rating_count?: number
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          available?: boolean
+          bio?: string | null
+          category_id?: string | null
+          city?: string | null
+          created_at?: string
+          experience_years?: number | null
+          hourly_rate?: number | null
+          id?: string
+          rating_avg?: number
+          rating_count?: number
+          skills?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artisans_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          read: boolean
+          receiver_id: string
+          request_id: string | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          receiver_id: string
+          request_id?: string | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          receiver_id?: string
+          request_id?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          city: string | null
+          created_at: string
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          city?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          artisan_id: string
+          client_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          request_id: string | null
+        }
+        Insert: {
+          artisan_id: string
+          client_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          request_id?: string | null
+        }
+        Update: {
+          artisan_id?: string
+          client_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          address: string | null
+          artisan_id: string
+          category_id: string | null
+          city: string | null
+          client_id: string
+          created_at: string
+          description: string
+          id: string
+          preferred_date: string | null
+          status: Database["public"]["Enums"]["request_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          artisan_id: string
+          category_id?: string | null
+          city?: string | null
+          client_id: string
+          created_at?: string
+          description: string
+          id?: string
+          preferred_date?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          artisan_id?: string
+          category_id?: string | null
+          city?: string | null
+          client_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          preferred_date?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "client" | "artisan" | "admin"
+      request_status:
+        | "pending"
+        | "accepted"
+        | "rejected"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +425,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["client", "artisan", "admin"],
+      request_status: [
+        "pending",
+        "accepted",
+        "rejected",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+    },
   },
 } as const
