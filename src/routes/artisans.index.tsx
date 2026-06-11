@@ -58,7 +58,7 @@ function ArtisansList() {
         <Card className="p-4 mb-8 grid md:grid-cols-3 gap-3">
           <div>
             <Label className="text-xs">Métier</Label>
-            <Select value={category ?? "all"} onValueChange={(v) => navigate({ search: (s) => ({ ...s, category: v === "all" ? undefined : v }) })}>
+            <Select value={category ?? "all"} onValueChange={(v) => navigate({ search: (s: any) => ({ ...s, category: v === "all" ? undefined : v }) })}>
               <SelectTrigger><SelectValue placeholder="Tous" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les métiers</SelectItem>
@@ -71,7 +71,7 @@ function ArtisansList() {
             <Input placeholder="Casablanca, Rabat…" value={cityInput} onChange={(e) => setCityInput(e.target.value)} />
           </div>
           <div className="flex items-end">
-            <Button className="w-full" onClick={() => navigate({ search: (s) => ({ ...s, city: cityInput || undefined }) })}>Rechercher</Button>
+            <Button className="w-full" onClick={() => navigate({ search: (s: any) => ({ ...s, city: cityInput || undefined }) })}>Rechercher</Button>
           </div>
         </Card>
 

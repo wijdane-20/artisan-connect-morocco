@@ -9,10 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ArtisansRouteImport } from './routes/artisans'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtisansIndexRouteImport } from './routes/artisans.index'
 import { Route as RequestsNewRouteImport } from './routes/requests.new'
@@ -21,11 +19,6 @@ import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
 
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -34,11 +27,6 @@ const ContactRoute = ContactRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArtisansRoute = ArtisansRouteImport.update({
-  id: '/artisans',
-  path: '/artisans',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,10 +67,8 @@ const ArtisansIdRoute = ArtisansIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/artisans': typeof ArtisansRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -94,7 +80,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -105,10 +90,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/artisans': typeof ArtisansRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
@@ -120,10 +103,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/artisans'
     | '/auth'
     | '/contact'
-    | '/dashboard'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -135,7 +116,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
-    | '/dashboard'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -145,10 +125,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/artisans'
     | '/auth'
     | '/contact'
-    | '/dashboard'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
@@ -159,22 +137,13 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ArtisansRoute: typeof ArtisansRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
   RequestsNewRoute: typeof RequestsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -187,13 +156,6 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/artisans': {
-      id: '/artisans'
-      path: '/artisans'
-      fullPath: '/artisans'
-      preLoaderRoute: typeof ArtisansRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -248,44 +210,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ArtisansRouteChildren {
-  ArtisansIdRoute: typeof ArtisansIdRoute
-  ArtisansIndexRoute: typeof ArtisansIndexRoute
-}
-
-const ArtisansRouteChildren: ArtisansRouteChildren = {
-  ArtisansIdRoute: ArtisansIdRoute,
-  ArtisansIndexRoute: ArtisansIndexRoute,
-}
-
-const ArtisansRouteWithChildren = ArtisansRoute._addFileChildren(
-  ArtisansRouteChildren,
-)
-
-interface DashboardRouteChildren {
-  DashboardAdminRoute: typeof DashboardAdminRoute
-  DashboardArtisanRoute: typeof DashboardArtisanRoute
-  DashboardClientRoute: typeof DashboardClientRoute
-}
-
-const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardAdminRoute: DashboardAdminRoute,
-  DashboardArtisanRoute: DashboardArtisanRoute,
-  DashboardClientRoute: DashboardClientRoute,
-}
-
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ArtisansRoute: ArtisansRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRouteWithChildren,
   RequestsNewRoute: RequestsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
