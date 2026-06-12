@@ -10,11 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtisansIndexRouteImport } from './routes/artisans.index'
 import { Route as RequestsNewRouteImport } from './routes/requests.new'
+import { Route as DashboardVerificationRouteImport } from './routes/dashboard/verification'
 import { Route as DashboardClientRouteImport } from './routes/dashboard/client'
 import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
@@ -23,6 +27,21 @@ import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
 const ReviewsRoute = ReviewsRouteImport.update({
   id: '/reviews',
   path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -50,6 +69,11 @@ const RequestsNewRoute = RequestsNewRouteImport.update({
   path: '/requests/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardVerificationRoute = DashboardVerificationRouteImport.update({
+  id: '/dashboard/verification',
+  path: '/dashboard/verification',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardClientRoute = DashboardClientRouteImport.update({
   id: '/dashboard/client',
   path: '/dashboard/client',
@@ -75,11 +99,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/messages': typeof MessagesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
   '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/verification': typeof DashboardVerificationRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -87,11 +115,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/messages': typeof MessagesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
   '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/verification': typeof DashboardVerificationRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans': typeof ArtisansIndexRoute
 }
@@ -100,11 +132,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/messages': typeof MessagesRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
   '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/verification': typeof DashboardVerificationRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -114,11 +150,15 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/forgot-password'
+    | '/messages'
+    | '/reset-password'
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
     | '/dashboard/client'
+    | '/dashboard/verification'
     | '/requests/new'
     | '/artisans/'
   fileRoutesByTo: FileRoutesByTo
@@ -126,11 +166,15 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/forgot-password'
+    | '/messages'
+    | '/reset-password'
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
     | '/dashboard/client'
+    | '/dashboard/verification'
     | '/requests/new'
     | '/artisans'
   id:
@@ -138,11 +182,15 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/contact'
+    | '/forgot-password'
+    | '/messages'
+    | '/reset-password'
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
     | '/dashboard/client'
+    | '/dashboard/verification'
     | '/requests/new'
     | '/artisans/'
   fileRoutesById: FileRoutesById
@@ -151,11 +199,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  MessagesRoute: typeof MessagesRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ReviewsRoute: typeof ReviewsRoute
   ArtisansIdRoute: typeof ArtisansIdRoute
   DashboardAdminRoute: typeof DashboardAdminRoute
   DashboardArtisanRoute: typeof DashboardArtisanRoute
   DashboardClientRoute: typeof DashboardClientRoute
+  DashboardVerificationRoute: typeof DashboardVerificationRoute
   RequestsNewRoute: typeof RequestsNewRoute
   ArtisansIndexRoute: typeof ArtisansIndexRoute
 }
@@ -167,6 +219,27 @@ declare module '@tanstack/react-router' {
       path: '/reviews'
       fullPath: '/reviews'
       preLoaderRoute: typeof ReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -204,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequestsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/verification': {
+      id: '/dashboard/verification'
+      path: '/dashboard/verification'
+      fullPath: '/dashboard/verification'
+      preLoaderRoute: typeof DashboardVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/client': {
       id: '/dashboard/client'
       path: '/dashboard/client'
@@ -239,24 +319,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  MessagesRoute: MessagesRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ReviewsRoute: ReviewsRoute,
   ArtisansIdRoute: ArtisansIdRoute,
   DashboardAdminRoute: DashboardAdminRoute,
   DashboardArtisanRoute: DashboardArtisanRoute,
   DashboardClientRoute: DashboardClientRoute,
+  DashboardVerificationRoute: DashboardVerificationRoute,
   RequestsNewRoute: RequestsNewRoute,
   ArtisansIndexRoute: ArtisansIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

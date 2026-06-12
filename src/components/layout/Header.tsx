@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Hammer, LogOut, LayoutDashboard } from "lucide-react";
+import { Hammer, LogOut, LayoutDashboard, MessageCircle } from "lucide-react";
 
 export function Header() {
   const { user, roles, signOut } = useAuth();
@@ -28,6 +28,9 @@ export function Header() {
         <div className="flex items-center gap-2">
           {user ? (
             <>
+              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link to="/messages"><MessageCircle className="h-4 w-4" /></Link>
+              </Button>
               <Button asChild variant="ghost" size="sm">
                 <Link to={dashPath}><LayoutDashboard className="mr-2 h-4 w-4" />Espace</Link>
               </Button>
