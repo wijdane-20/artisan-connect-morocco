@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { Star } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 
-export const Route = createFileRoute("/dashboard/artisan-area")({
+export const Route = createFileRoute("/dashboard/artisan")({
   head: () => ({ meta: [{ title: "Espace artisan — ArtisanConnect" }] }),
   component: ArtisanDashboard,
 });

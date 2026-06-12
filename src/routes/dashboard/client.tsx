@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { StatusBadge } from "@/components/StatusBadge";
 import { ReviewDialog } from "@/components/ReviewDialog";
 
-export const Route = createFileRoute("/dashboard/client-area")({
+export const Route = createFileRoute("/dashboard/client")({
   head: () => ({ meta: [{ title: "Mon espace — ArtisanConnect" }] }),
   component: ClientDashboard,
 });
