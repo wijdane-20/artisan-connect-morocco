@@ -15,8 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtisansIndexRouteImport } from './routes/artisans.index'
 import { Route as RequestsNewRouteImport } from './routes/requests.new'
-import { Route as DashboardClientRouteImport } from './routes/dashboard.client'
-import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan'
+import { Route as DashboardClientAreaRouteImport } from './routes/dashboard.client-area'
+import { Route as DashboardArtisanAreaRouteImport } from './routes/dashboard.artisan-area'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
 
@@ -50,14 +50,14 @@ const RequestsNewRoute = RequestsNewRouteImport.update({
   path: '/requests/new',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardClientRoute = DashboardClientRouteImport.update({
-  id: '/dashboard/client',
-  path: '/dashboard/client',
+const DashboardClientAreaRoute = DashboardClientAreaRouteImport.update({
+  id: '/dashboard/client-area',
+  path: '/dashboard/client-area',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardArtisanRoute = DashboardArtisanRouteImport.update({
-  id: '/dashboard/artisan',
-  path: '/dashboard/artisan',
+const DashboardArtisanAreaRoute = DashboardArtisanAreaRouteImport.update({
+  id: '/dashboard/artisan-area',
+  path: '/dashboard/artisan-area',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardAdminRoute = DashboardAdminRouteImport.update({
@@ -78,8 +78,8 @@ export interface FileRoutesByFullPath {
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/artisan-area': typeof DashboardArtisanAreaRoute
+  '/dashboard/client-area': typeof DashboardClientAreaRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -90,8 +90,8 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/artisan-area': typeof DashboardArtisanAreaRoute
+  '/dashboard/client-area': typeof DashboardClientAreaRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans': typeof ArtisansIndexRoute
 }
@@ -103,8 +103,8 @@ export interface FileRoutesById {
   '/reviews': typeof ReviewsRoute
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client': typeof DashboardClientRoute
+  '/dashboard/artisan-area': typeof DashboardArtisanAreaRoute
+  '/dashboard/client-area': typeof DashboardClientAreaRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -117,8 +117,8 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
-    | '/dashboard/artisan'
-    | '/dashboard/client'
+    | '/dashboard/artisan-area'
+    | '/dashboard/client-area'
     | '/requests/new'
     | '/artisans/'
   fileRoutesByTo: FileRoutesByTo
@@ -129,8 +129,8 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
-    | '/dashboard/artisan'
-    | '/dashboard/client'
+    | '/dashboard/artisan-area'
+    | '/dashboard/client-area'
     | '/requests/new'
     | '/artisans'
   id:
@@ -141,8 +141,8 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/artisans/$id'
     | '/dashboard/admin'
-    | '/dashboard/artisan'
-    | '/dashboard/client'
+    | '/dashboard/artisan-area'
+    | '/dashboard/client-area'
     | '/requests/new'
     | '/artisans/'
   fileRoutesById: FileRoutesById
@@ -154,8 +154,8 @@ export interface RootRouteChildren {
   ReviewsRoute: typeof ReviewsRoute
   ArtisansIdRoute: typeof ArtisansIdRoute
   DashboardAdminRoute: typeof DashboardAdminRoute
-  DashboardArtisanRoute: typeof DashboardArtisanRoute
-  DashboardClientRoute: typeof DashboardClientRoute
+  DashboardArtisanAreaRoute: typeof DashboardArtisanAreaRoute
+  DashboardClientAreaRoute: typeof DashboardClientAreaRoute
   RequestsNewRoute: typeof RequestsNewRoute
   ArtisansIndexRoute: typeof ArtisansIndexRoute
 }
@@ -204,18 +204,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequestsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/client': {
-      id: '/dashboard/client'
-      path: '/dashboard/client'
-      fullPath: '/dashboard/client'
-      preLoaderRoute: typeof DashboardClientRouteImport
+    '/dashboard/client-area': {
+      id: '/dashboard/client-area'
+      path: '/dashboard/client-area'
+      fullPath: '/dashboard/client-area'
+      preLoaderRoute: typeof DashboardClientAreaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/artisan': {
-      id: '/dashboard/artisan'
-      path: '/dashboard/artisan'
-      fullPath: '/dashboard/artisan'
-      preLoaderRoute: typeof DashboardArtisanRouteImport
+    '/dashboard/artisan-area': {
+      id: '/dashboard/artisan-area'
+      path: '/dashboard/artisan-area'
+      fullPath: '/dashboard/artisan-area'
+      preLoaderRoute: typeof DashboardArtisanAreaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/admin': {
@@ -242,11 +242,21 @@ const rootRouteChildren: RootRouteChildren = {
   ReviewsRoute: ReviewsRoute,
   ArtisansIdRoute: ArtisansIdRoute,
   DashboardAdminRoute: DashboardAdminRoute,
-  DashboardArtisanRoute: DashboardArtisanRoute,
-  DashboardClientRoute: DashboardClientRoute,
+  DashboardArtisanAreaRoute: DashboardArtisanAreaRoute,
+  DashboardClientAreaRoute: DashboardClientAreaRoute,
   RequestsNewRoute: RequestsNewRoute,
   ArtisansIndexRoute: ArtisansIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
