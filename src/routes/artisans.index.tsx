@@ -5,15 +5,19 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Star, MapPin, Briefcase } from "lucide-react";
-import { useState } from "react";
 
-const search = z.object({ category: z.string().optional(), city: z.string().optional() });
+const MOROCCAN_CITIES = ["Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir"];
+
+const search = z.object({
+  category: z.string().optional(),
+  city: z.string().optional(),
+  rating: z.coerce.number().optional(),
+});
 
 export const Route = createFileRoute("/artisans/")({
   validateSearch: search,
@@ -22,9 +26,8 @@ export const Route = createFileRoute("/artisans/")({
 });
 
 function ArtisansList() {
-  const { category, city } = Route.useSearch();
+  const { category, city, rating } = Route.useSearch();
   const navigate = Route.useNavigate();
-  const [cityInput, setCityInput] = useState(city ?? "");
 
   const { data: cats } = useQuery({
     queryKey: ["categories"],
@@ -32,19 +35,23 @@ function ArtisansList() {
   });
 
   const { data: artisans, isLoading } = useQuery({
-    queryKey: ["artisans", category, city],
+    queryKey: ["artisans", category, city, rating],
     queryFn: async () => {
       let q = supabase
         .from("artisans")
         .select("id, bio, skills, experience_years, hourly_rate, city, rating_avg, rating_count, category:categories(name, slug), profile:profiles!artisans_id_fkey(full_name, avatar_url, city)")
         .eq("approved", true);
       if (city) q = q.ilike("city", `%${city}%`);
+      if (rating) q = q.gte("rating_avg", rating);
       const { data } = await q;
       let rows = data ?? [];
       if (category) rows = rows.filter((r: any) => r.category?.slug === category);
       return rows;
     },
   });
+
+  const updateSearch = (patch: Record<string, string | number | undefined>) =>
+    navigate({ search: (s: any) => ({ ...s, ...patch }) });
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -55,10 +62,10 @@ function ArtisansList() {
           <p className="text-muted-foreground mt-2">Découvrez les professionnels disponibles près de chez vous</p>
         </div>
 
-        <Card className="p-4 mb-8 grid md:grid-cols-3 gap-3">
+        <Card className="p-4 mb-8 grid md:grid-cols-4 gap-3">
           <div>
             <Label className="text-xs">Métier</Label>
-            <Select value={category ?? "all"} onValueChange={(v) => navigate({ search: (s: any) => ({ ...s, category: v === "all" ? undefined : v }) })}>
+            <Select value={category ?? "all"} onValueChange={(v) => updateSearch({ category: v === "all" ? undefined : v })}>
               <SelectTrigger><SelectValue placeholder="Tous" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les métiers</SelectItem>
@@ -68,10 +75,29 @@ function ArtisansList() {
           </div>
           <div>
             <Label className="text-xs">Ville</Label>
-            <Input placeholder="Casablanca, Rabat…" value={cityInput} onChange={(e) => setCityInput(e.target.value)} />
+            <Select value={city ?? "all"} onValueChange={(v) => updateSearch({ city: v === "all" ? undefined : v })}>
+              <SelectTrigger><SelectValue placeholder="Toutes" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toutes les villes</SelectItem>
+                {MOROCCAN_CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-xs">Note minimale</Label>
+            <Select value={rating ? String(rating) : "all"} onValueChange={(v) => updateSearch({ rating: v === "all" ? undefined : Number(v) })}>
+              <SelectTrigger><SelectValue placeholder="Toutes" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toutes les notes</SelectItem>
+                <SelectItem value="4.5">4.5 ★ et plus</SelectItem>
+                <SelectItem value="4">4 ★ et plus</SelectItem>
+                <SelectItem value="3">3 ★ et plus</SelectItem>
+                <SelectItem value="2">2 ★ et plus</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex items-end">
-            <Button className="w-full" onClick={() => navigate({ search: (s: any) => ({ ...s, city: cityInput || undefined }) })}>Rechercher</Button>
+            <Button variant="outline" className="w-full" onClick={() => navigate({ search: {} as any })}>Réinitialiser</Button>
           </div>
         </Card>
 
