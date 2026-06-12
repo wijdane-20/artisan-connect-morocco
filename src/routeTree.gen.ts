@@ -15,7 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtisansIndexRouteImport } from './routes/artisans.index'
 import { Route as RequestsNewRouteImport } from './routes/requests.new'
-import { Route as DashboardClientAreaRouteImport } from './routes/dashboard.client-area'
+import { Route as DashboardClientRouteImport } from './routes/dashboard/client'
 import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
@@ -50,9 +50,9 @@ const RequestsNewRoute = RequestsNewRouteImport.update({
   path: '/requests/new',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardClientAreaRoute = DashboardClientAreaRouteImport.update({
-  id: '/dashboard/client-area',
-  path: '/dashboard/client-area',
+const DashboardClientRoute = DashboardClientRouteImport.update({
+  id: '/dashboard/client',
+  path: '/dashboard/client',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardArtisanRoute = DashboardArtisanRouteImport.update({
@@ -79,7 +79,7 @@ export interface FileRoutesByFullPath {
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client-area': typeof DashboardClientAreaRoute
+  '/dashboard/client': typeof DashboardClientRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -91,7 +91,7 @@ export interface FileRoutesByTo {
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client-area': typeof DashboardClientAreaRoute
+  '/dashboard/client': typeof DashboardClientRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans': typeof ArtisansIndexRoute
 }
@@ -104,7 +104,7 @@ export interface FileRoutesById {
   '/artisans/$id': typeof ArtisansIdRoute
   '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/artisan': typeof DashboardArtisanRoute
-  '/dashboard/client-area': typeof DashboardClientAreaRoute
+  '/dashboard/client': typeof DashboardClientRoute
   '/requests/new': typeof RequestsNewRoute
   '/artisans/': typeof ArtisansIndexRoute
 }
@@ -118,7 +118,7 @@ export interface FileRouteTypes {
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
-    | '/dashboard/client-area'
+    | '/dashboard/client'
     | '/requests/new'
     | '/artisans/'
   fileRoutesByTo: FileRoutesByTo
@@ -130,7 +130,7 @@ export interface FileRouteTypes {
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
-    | '/dashboard/client-area'
+    | '/dashboard/client'
     | '/requests/new'
     | '/artisans'
   id:
@@ -142,7 +142,7 @@ export interface FileRouteTypes {
     | '/artisans/$id'
     | '/dashboard/admin'
     | '/dashboard/artisan'
-    | '/dashboard/client-area'
+    | '/dashboard/client'
     | '/requests/new'
     | '/artisans/'
   fileRoutesById: FileRoutesById
@@ -155,7 +155,7 @@ export interface RootRouteChildren {
   ArtisansIdRoute: typeof ArtisansIdRoute
   DashboardAdminRoute: typeof DashboardAdminRoute
   DashboardArtisanRoute: typeof DashboardArtisanRoute
-  DashboardClientAreaRoute: typeof DashboardClientAreaRoute
+  DashboardClientRoute: typeof DashboardClientRoute
   RequestsNewRoute: typeof RequestsNewRoute
   ArtisansIndexRoute: typeof ArtisansIndexRoute
 }
@@ -204,11 +204,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequestsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/client-area': {
-      id: '/dashboard/client-area'
-      path: '/dashboard/client-area'
-      fullPath: '/dashboard/client-area'
-      preLoaderRoute: typeof DashboardClientAreaRouteImport
+    '/dashboard/client': {
+      id: '/dashboard/client'
+      path: '/dashboard/client'
+      fullPath: '/dashboard/client'
+      preLoaderRoute: typeof DashboardClientRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/artisan': {
@@ -243,7 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArtisansIdRoute: ArtisansIdRoute,
   DashboardAdminRoute: DashboardAdminRoute,
   DashboardArtisanRoute: DashboardArtisanRoute,
-  DashboardClientAreaRoute: DashboardClientAreaRoute,
+  DashboardClientRoute: DashboardClientRoute,
   RequestsNewRoute: RequestsNewRoute,
   ArtisansIndexRoute: ArtisansIndexRoute,
 }
