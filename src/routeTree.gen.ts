@@ -15,7 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArtisansIndexRouteImport } from './routes/artisans.index'
 import { Route as RequestsNewRouteImport } from './routes/requests.new'
-import { Route as DashboardClientRouteImport } from './routes/dashboard.client'
+import { Route as DashboardClientRouteImport } from './routes/dashboard/client'
 import { Route as DashboardArtisanRouteImport } from './routes/dashboard.artisan'
 import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 import { Route as ArtisansIdRouteImport } from './routes/artisans.$id'
@@ -250,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
