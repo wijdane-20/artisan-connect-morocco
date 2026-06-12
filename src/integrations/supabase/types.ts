@@ -21,14 +21,26 @@ export type Database = {
           bio: string | null
           category_id: string | null
           city: string | null
+          completed_jobs: number
           created_at: string
+          description: string | null
           experience_years: number | null
           hourly_rate: number | null
           id: string
+          is_verified: boolean
+          latitude: number | null
+          longitude: number | null
+          phone: string | null
+          price_max: number | null
+          price_min: number | null
+          profession: string | null
+          profile_photo_url: string | null
           rating_avg: number
           rating_count: number
           skills: string[] | null
+          suspended: boolean
           updated_at: string
+          verification_status: string
         }
         Insert: {
           approved?: boolean
@@ -36,14 +48,26 @@ export type Database = {
           bio?: string | null
           category_id?: string | null
           city?: string | null
+          completed_jobs?: number
           created_at?: string
+          description?: string | null
           experience_years?: number | null
           hourly_rate?: number | null
           id: string
+          is_verified?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          phone?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          profession?: string | null
+          profile_photo_url?: string | null
           rating_avg?: number
           rating_count?: number
           skills?: string[] | null
+          suspended?: boolean
           updated_at?: string
+          verification_status?: string
         }
         Update: {
           approved?: boolean
@@ -51,14 +75,26 @@ export type Database = {
           bio?: string | null
           category_id?: string | null
           city?: string | null
+          completed_jobs?: number
           created_at?: string
+          description?: string | null
           experience_years?: number | null
           hourly_rate?: number | null
           id?: string
+          is_verified?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          phone?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          profession?: string | null
+          profile_photo_url?: string | null
           rating_avg?: number
           rating_count?: number
           skills?: string[] | null
+          suspended?: boolean
           updated_at?: string
+          verification_status?: string
         }
         Relationships: [
           {
@@ -135,6 +171,41 @@ export type Database = {
           },
         ]
       }
+      portfolio_items: {
+        Row: {
+          artisan_id: string
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          title: string | null
+        }
+        Insert: {
+          artisan_id: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          title?: string | null
+        }
+        Update: {
+          artisan_id?: string
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_artisan_id_fkey"
+            columns: ["artisan_id"]
+            isOneToOne: false
+            referencedRelation: "artisans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -142,6 +213,7 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          is_suspended: boolean
           phone: string | null
           updated_at: string
         }
@@ -151,6 +223,7 @@ export type Database = {
           created_at?: string
           full_name?: string
           id: string
+          is_suspended?: boolean
           phone?: string | null
           updated_at?: string
         }
@@ -160,6 +233,7 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          is_suspended?: boolean
           phone?: string | null
           updated_at?: string
         }
@@ -276,6 +350,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      verification_requests: {
+        Row: {
+          admin_notes: string | null
+          artisan_id: string
+          cin_url: string | null
+          created_at: string
+          doc_url: string | null
+          id: string
+          photo_url: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          artisan_id: string
+          cin_url?: string | null
+          created_at?: string
+          doc_url?: string | null
+          id?: string
+          photo_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          artisan_id?: string
+          cin_url?: string | null
+          created_at?: string
+          doc_url?: string | null
+          id?: string
+          photo_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_requests_artisan_id_fkey"
+            columns: ["artisan_id"]
+            isOneToOne: false
+            referencedRelation: "artisans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
