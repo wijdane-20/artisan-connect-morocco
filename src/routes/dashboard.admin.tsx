@@ -36,14 +36,24 @@ function AdminDashboard() {
     enabled: roles.includes("admin"),
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      const [u, a, r, rev] = await Promise.all([
+      const [u, a, r, rev, pay] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("artisans").select("id", { count: "exact", head: true }),
         supabase.from("service_requests").select("id", { count: "exact", head: true }),
         supabase.from("reviews").select("id", { count: "exact", head: true }),
+        supabase.from("payments").select("amount").eq("status", "paid"),
       ]);
-      return { users: u.count ?? 0, artisans: a.count ?? 0, requests: r.count ?? 0, reviews: rev.count ?? 0 };
+      const revenue = (pay.data ?? []).reduce((s: number, p: any) => s + Number(p.amount ?? 0), 0);
+      return { users: u.count ?? 0, artisans: a.count ?? 0, requests: r.count ?? 0, reviews: rev.count ?? 0, revenue };
     },
+  });
+
+  const { data: payments } = useQuery({
+    enabled: roles.includes("admin"),
+    queryKey: ["all-payments"],
+    queryFn: async () => (await supabase.from("payments")
+      .select("*, client:profiles!payments_client_id_fkey(full_name), request:service_requests(title)")
+      .order("created_at", { ascending: false }).limit(100)).data ?? [],
   });
 
   const { data: pending, refetch: refetchPending } = useQuery({
