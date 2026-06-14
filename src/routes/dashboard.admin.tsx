@@ -316,3 +316,45 @@ function StatCard({ icon: Icon, label, value }: any) {
     </Card>
   );
 }
+
+function FeeSettings() {
+  const [amount, setAmount] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("MAD");
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    getBookingFee().then((f) => { setAmount(String(f.amount)); setCurrency(f.currency); setLoaded(true); });
+  }, []);
+
+  const save = async () => {
+    const n = Number(amount);
+    if (!Number.isFinite(n) || n < 0) { toast.error("Montant invalide"); return; }
+    setLoading(true);
+    const { error } = await setBookingFee({ amount: n, currency });
+    setLoading(false);
+    if (error) toast.error(error.message); else toast.success("Frais de demande mis à jour");
+  };
+
+  return (
+    <Card className="p-6 max-w-lg">
+      <div className="flex items-center gap-2 mb-1"><SettingsIcon className="h-5 w-5 text-primary" /><h2 className="font-semibold">Frais de demande</h2></div>
+      <p className="text-sm text-muted-foreground mb-4">Montant facturé au client avant l'envoi d'une demande à un artisan.</p>
+      {!loaded ? <p className="text-sm text-muted-foreground">Chargement…</p> : (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2 space-y-1">
+              <Label>Montant</Label>
+              <Input type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label>Devise</Label>
+              <Input value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} maxLength={5} />
+            </div>
+          </div>
+          <Button onClick={save} disabled={loading}>{loading ? "Enregistrement…" : "Enregistrer"}</Button>
+        </div>
+      )}
+    </Card>
+  );
+}
