@@ -201,7 +201,7 @@ function AdminDashboard() {
           <TabsContent value="requests" className="mt-4">
             <Card className="overflow-x-auto">
               <Table>
-                <TableHeader><TableRow><TableHead>Titre</TableHead><TableHead>Client</TableHead><TableHead>Artisan</TableHead><TableHead>Statut</TableHead><TableHead>Date</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Titre</TableHead><TableHead>Client</TableHead><TableHead>Artisan</TableHead><TableHead>Statut</TableHead><TableHead>Paiement</TableHead><TableHead>Date</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {allRequests?.map((r: any) => (
                     <TableRow key={r.id}>
@@ -209,9 +209,37 @@ function AdminDashboard() {
                       <TableCell>{r.client?.full_name}</TableCell>
                       <TableCell>{r.artisan?.full_name}</TableCell>
                       <TableCell><Badge variant="outline">{r.status}</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant={r.payment_status === "paid" ? "default" : r.payment_status === "failed" ? "destructive" : "secondary"}>
+                          {r.payment_status ?? "pending"}
+                        </Badge>
+                      </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleDateString("fr-FR")}</TableCell>
                     </TableRow>
                   ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="payments" className="mt-4">
+            <Card className="overflow-x-auto">
+              <Table>
+                <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Client</TableHead><TableHead>Demande</TableHead><TableHead>Montant</TableHead><TableHead>Mode</TableHead><TableHead>Référence</TableHead><TableHead>Statut</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {payments && payments.length > 0 ? payments.map((p: any) => (
+                    <TableRow key={p.id}>
+                      <TableCell className="text-sm">{new Date(p.created_at).toLocaleString("fr-FR")}</TableCell>
+                      <TableCell>{p.client?.full_name ?? "—"}</TableCell>
+                      <TableCell>{p.request?.title ?? "—"}</TableCell>
+                      <TableCell className="font-medium">{p.amount} {p.currency}</TableCell>
+                      <TableCell className="capitalize">{p.provider}</TableCell>
+                      <TableCell className="font-mono text-xs">{p.reference ?? "—"}</TableCell>
+                      <TableCell><Badge variant={p.status === "paid" ? "default" : p.status === "failed" ? "destructive" : "secondary"}>{p.status}</Badge></TableCell>
+                    </TableRow>
+                  )) : (
+                    <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucun paiement.</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Card>
@@ -229,6 +257,10 @@ function AdminDashboard() {
                 </div>
               </Card>
             ))}
+          </TabsContent>
+
+          <TabsContent value="settings" className="mt-4">
+            <FeeSettings />
           </TabsContent>
         </Tabs>
       </main>
