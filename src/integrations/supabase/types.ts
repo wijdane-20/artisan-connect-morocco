@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       artisans: {
         Row: {
           approved: boolean
@@ -171,6 +189,56 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          client_id: string
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json | null
+          provider: string
+          reference: string | null
+          request_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          provider?: string
+          reference?: string | null
+          request_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json | null
+          provider?: string
+          reference?: string | null
+          request_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portfolio_items: {
         Row: {
           artisan_id: string
@@ -287,6 +355,11 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          payment_amount: number | null
+          payment_date: string | null
+          payment_provider: string | null
+          payment_reference: string | null
+          payment_status: string
           preferred_date: string | null
           status: Database["public"]["Enums"]["request_status"]
           title: string
@@ -301,6 +374,11 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           preferred_date?: string | null
           status?: Database["public"]["Enums"]["request_status"]
           title: string
@@ -315,6 +393,11 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_provider?: string | null
+          payment_reference?: string | null
+          payment_status?: string
           preferred_date?: string | null
           status?: Database["public"]["Enums"]["request_status"]
           title?: string

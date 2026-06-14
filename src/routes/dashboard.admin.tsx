@@ -6,12 +6,15 @@ import { Footer } from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
-import { Users, Briefcase, ClipboardList, Star, ShieldCheck, Ban } from "lucide-react";
+import { Users, Briefcase, ClipboardList, Star, ShieldCheck, Ban, Wallet, Settings as SettingsIcon } from "lucide-react";
+import { getBookingFee, setBookingFee } from "@/lib/payments";
 
 export const Route = createFileRoute("/dashboard/admin")({
   head: () => ({ meta: [{ title: "Administration — ArtisanConnect" }] }),
@@ -33,14 +36,24 @@ function AdminDashboard() {
     enabled: roles.includes("admin"),
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      const [u, a, r, rev] = await Promise.all([
+      const [u, a, r, rev, pay] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("artisans").select("id", { count: "exact", head: true }),
         supabase.from("service_requests").select("id", { count: "exact", head: true }),
         supabase.from("reviews").select("id", { count: "exact", head: true }),
+        supabase.from("payments").select("amount").eq("status", "paid"),
       ]);
-      return { users: u.count ?? 0, artisans: a.count ?? 0, requests: r.count ?? 0, reviews: rev.count ?? 0 };
+      const revenue = (pay.data ?? []).reduce((s: number, p: any) => s + Number(p.amount ?? 0), 0);
+      return { users: u.count ?? 0, artisans: a.count ?? 0, requests: r.count ?? 0, reviews: rev.count ?? 0, revenue };
     },
+  });
+
+  const { data: payments } = useQuery({
+    enabled: roles.includes("admin"),
+    queryKey: ["all-payments"],
+    queryFn: async () => (await supabase.from("payments")
+      .select("*, client:profiles!payments_client_id_fkey(full_name), request:service_requests(title)")
+      .order("created_at", { ascending: false }).limit(100)).data ?? [],
   });
 
   const { data: pending, refetch: refetchPending } = useQuery({
@@ -125,11 +138,12 @@ function AdminDashboard() {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold">Administration</h1>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
           <StatCard icon={Users} label="Utilisateurs" value={stats?.users} />
           <StatCard icon={Briefcase} label="Artisans" value={stats?.artisans} />
           <StatCard icon={ClipboardList} label="Demandes" value={stats?.requests} />
           <StatCard icon={Star} label="Avis" value={stats?.reviews} />
+          <StatCard icon={Wallet} label="Revenus (MAD)" value={stats?.revenue?.toFixed(2)} />
         </div>
 
         <Tabs defaultValue="verifs" className="mt-8">
@@ -138,7 +152,9 @@ function AdminDashboard() {
             <TabsTrigger value="pending">Artisans à approuver ({pending?.length ?? 0})</TabsTrigger>
             <TabsTrigger value="users">Utilisateurs</TabsTrigger>
             <TabsTrigger value="requests">Demandes</TabsTrigger>
+            <TabsTrigger value="payments">Paiements</TabsTrigger>
             <TabsTrigger value="reviews">Avis</TabsTrigger>
+            <TabsTrigger value="settings">Paramètres</TabsTrigger>
           </TabsList>
 
           <TabsContent value="verifs" className="mt-4 space-y-3">
@@ -185,7 +201,7 @@ function AdminDashboard() {
           <TabsContent value="requests" className="mt-4">
             <Card className="overflow-x-auto">
               <Table>
-                <TableHeader><TableRow><TableHead>Titre</TableHead><TableHead>Client</TableHead><TableHead>Artisan</TableHead><TableHead>Statut</TableHead><TableHead>Date</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Titre</TableHead><TableHead>Client</TableHead><TableHead>Artisan</TableHead><TableHead>Statut</TableHead><TableHead>Paiement</TableHead><TableHead>Date</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {allRequests?.map((r: any) => (
                     <TableRow key={r.id}>
@@ -193,9 +209,37 @@ function AdminDashboard() {
                       <TableCell>{r.client?.full_name}</TableCell>
                       <TableCell>{r.artisan?.full_name}</TableCell>
                       <TableCell><Badge variant="outline">{r.status}</Badge></TableCell>
+                      <TableCell>
+                        <Badge variant={r.payment_status === "paid" ? "default" : r.payment_status === "failed" ? "destructive" : "secondary"}>
+                          {r.payment_status ?? "pending"}
+                        </Badge>
+                      </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleDateString("fr-FR")}</TableCell>
                     </TableRow>
                   ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="payments" className="mt-4">
+            <Card className="overflow-x-auto">
+              <Table>
+                <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Client</TableHead><TableHead>Demande</TableHead><TableHead>Montant</TableHead><TableHead>Mode</TableHead><TableHead>Référence</TableHead><TableHead>Statut</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {payments && payments.length > 0 ? payments.map((p: any) => (
+                    <TableRow key={p.id}>
+                      <TableCell className="text-sm">{new Date(p.created_at).toLocaleString("fr-FR")}</TableCell>
+                      <TableCell>{p.client?.full_name ?? "—"}</TableCell>
+                      <TableCell>{p.request?.title ?? "—"}</TableCell>
+                      <TableCell className="font-medium">{p.amount} {p.currency}</TableCell>
+                      <TableCell className="capitalize">{p.provider}</TableCell>
+                      <TableCell className="font-mono text-xs">{p.reference ?? "—"}</TableCell>
+                      <TableCell><Badge variant={p.status === "paid" ? "default" : p.status === "failed" ? "destructive" : "secondary"}>{p.status}</Badge></TableCell>
+                    </TableRow>
+                  )) : (
+                    <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucun paiement.</TableCell></TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Card>
@@ -213,6 +257,10 @@ function AdminDashboard() {
                 </div>
               </Card>
             ))}
+          </TabsContent>
+
+          <TabsContent value="settings" className="mt-4">
+            <FeeSettings />
           </TabsContent>
         </Tabs>
       </main>
@@ -265,6 +313,48 @@ function StatCard({ icon: Icon, label, value }: any) {
         <Icon className="h-5 w-5 text-primary" />
       </div>
       <div className="text-3xl font-bold mt-2">{value ?? "—"}</div>
+    </Card>
+  );
+}
+
+function FeeSettings() {
+  const [amount, setAmount] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("MAD");
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    getBookingFee().then((f) => { setAmount(String(f.amount)); setCurrency(f.currency); setLoaded(true); });
+  }, []);
+
+  const save = async () => {
+    const n = Number(amount);
+    if (!Number.isFinite(n) || n < 0) { toast.error("Montant invalide"); return; }
+    setLoading(true);
+    const { error } = await setBookingFee({ amount: n, currency });
+    setLoading(false);
+    if (error) toast.error(error.message); else toast.success("Frais de demande mis à jour");
+  };
+
+  return (
+    <Card className="p-6 max-w-lg">
+      <div className="flex items-center gap-2 mb-1"><SettingsIcon className="h-5 w-5 text-primary" /><h2 className="font-semibold">Frais de demande</h2></div>
+      <p className="text-sm text-muted-foreground mb-4">Montant facturé au client avant l'envoi d'une demande à un artisan.</p>
+      {!loaded ? <p className="text-sm text-muted-foreground">Chargement…</p> : (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2 space-y-1">
+              <Label>Montant</Label>
+              <Input type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label>Devise</Label>
+              <Input value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} maxLength={5} />
+            </div>
+          </div>
+          <Button onClick={save} disabled={loading}>{loading ? "Enregistrement…" : "Enregistrer"}</Button>
+        </div>
+      )}
     </Card>
   );
 }
