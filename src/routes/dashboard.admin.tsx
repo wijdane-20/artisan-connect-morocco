@@ -138,11 +138,12 @@ function AdminDashboard() {
       <Header />
       <main className="flex-1 container mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold">Administration</h1>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
           <StatCard icon={Users} label="Utilisateurs" value={stats?.users} />
           <StatCard icon={Briefcase} label="Artisans" value={stats?.artisans} />
           <StatCard icon={ClipboardList} label="Demandes" value={stats?.requests} />
           <StatCard icon={Star} label="Avis" value={stats?.reviews} />
+          <StatCard icon={Wallet} label="Revenus (MAD)" value={stats?.revenue?.toFixed(2)} />
         </div>
 
         <Tabs defaultValue="verifs" className="mt-8">
@@ -151,7 +152,9 @@ function AdminDashboard() {
             <TabsTrigger value="pending">Artisans à approuver ({pending?.length ?? 0})</TabsTrigger>
             <TabsTrigger value="users">Utilisateurs</TabsTrigger>
             <TabsTrigger value="requests">Demandes</TabsTrigger>
+            <TabsTrigger value="payments">Paiements</TabsTrigger>
             <TabsTrigger value="reviews">Avis</TabsTrigger>
+            <TabsTrigger value="settings">Paramètres</TabsTrigger>
           </TabsList>
 
           <TabsContent value="verifs" className="mt-4 space-y-3">
